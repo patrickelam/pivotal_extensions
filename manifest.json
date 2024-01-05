@@ -1,0 +1,31 @@
+{
+    "name": "Pivotal Extensions",
+    "version": "0.1",
+    "content_scripts": [
+      {
+        "matches": ["https://www.pivotaltracker.com/n/projects/*"],
+        "js": ["pivotal.js","days_in_progress.js"],
+        "run_at": "document_start"
+      }
+    ],
+    "icons": {
+        "48": "icons/hammer-48.ico"
+    },
+    "permissions": [
+        "cookies",
+        "activeTab",
+        "webRequest",
+        "webRequestBlocking",
+        "webNavigation",
+        "https://www.pivotaltracker.com/n/projects/*"
+    ],
+    "browser_action": {
+        "default_icon": "icons/hammer-48.ico",
+        "default_title": "Extensions",
+        "default_popup": "options/options.html"
+    },
+    "background": {
+      "page": "background/background.html"
+    },
+    "manifest_version": 2
+  }
