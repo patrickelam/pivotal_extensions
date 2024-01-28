@@ -87,8 +87,8 @@ var handleMessageFromOptions = (request, sender, sendResponse) => {
 };
 
 var handlePageFinishedLoading = (event) => {
-    console.log("handlePageFinishedLoading");
-    console.log(event);
+    //console.log("handlePageFinishedLoading");
+    //console.log(event);
     sendUpdateCommand();
 }
 

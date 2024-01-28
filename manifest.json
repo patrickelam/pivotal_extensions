@@ -15,7 +15,6 @@
         "cookies",
         "activeTab",
         "webRequest",
-        "webRequestBlocking",
         "webNavigation",
         "https://www.pivotaltracker.com/n/projects/*"
     ],
