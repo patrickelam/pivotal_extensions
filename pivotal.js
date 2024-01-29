@@ -1,23 +1,28 @@
 const BASE_URL = "https://www.pivotaltracker.com/services/v5";
 
-
 var headers;
 var requestInit;
 
-var setHeaders = (cookie) => {
-    headers = new Headers();
-    headers.append("Accept", "application/json");
-    headers.append("Accept-Encoding", "gzip, deflate, br");
-    headers.append("Accept-Language", "en-US,en;q=0.5");
-    headers.append("Cache-Control", "no-cache");
-    headers.append("Cookie", cookie);
+var headersAreSet = () => {
+    var set = !(headers === undefined);
+    return set;
+}
 
-    requestInit = {
-        method: "GET",
-        headers: headers,
-        mode: "cors",
-        cache: "default",
-    };
+var setHeaders = (cookie) => {
+    if(headers === undefined) {
+        headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Accept-Encoding", "gzip, deflate, br");
+        headers.append("Accept-Language", "en-US,en;q=0.5");
+        headers.append("Cache-Control", "no-cache");
+        headers.append("Cookie", cookie);
+        requestInit = {
+            method: "GET",
+            headers: headers,
+            mode: "cors",
+            cache: "default",
+        };
+    }
 }
 
 var extractProjectId = () => {

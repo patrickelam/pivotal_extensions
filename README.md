@@ -1,7 +1,5 @@
 
 
-
-
 References:
 about:debugging#/runtime/this-firefox
 https://stackoverflow.com/questions/26140443/executing-code-at-page-level-from-background-js-and-returning-the-value

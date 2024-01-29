@@ -1,23 +1,34 @@
 
-var handleMessageSendResponse = (response) => {
-    console.log("handleMessageSendResponse:");
-    console.log(response);
+var handleSendEventResponse = (response) => {
+    //console.log("handleMessageSendResponse:");
+    //console.log(response);
 }
 
-var handleMessageSendError = (e) => {
+var handleSendEventError = (e) => {
     console.log("handleMessageSendError:");
     console.log(e);
 }
 
-var messageSend = (command, data, handleSuccess, handleFailure) => {
-    const sending = chrome.runtime.sendMessage({
-        command: command,
-        data: data
+var sendEvent = (event, data, handleSuccess, handleFailure) => {
+    chrome.tabs
+    .query({
+      currentWindow: true,
+      active: true,
+    })
+    .then((tabs) => {
+        for (const tab of tabs) {
+            chrome.tabs
+              .sendMessage(tab.id, { event : event, data : data })
+              .then(handleSuccess, handleFailure);
+          }
     });
-    sending.then(handleSuccess, handleFailure);
 }
 
-var setDaysInProgressCheckbox = (newValue) => {
+var sendRefreshEvent = () => {
+    sendEvent("refresh",null,handleSendEventResponse,handleSendEventError);
+}
+
+var updateDaysInProgressCheckbox = (newValue) => {
     if(newValue === "true") {
         document.getElementById("days_in_progress").checked = true;
     } else {
@@ -25,30 +36,33 @@ var setDaysInProgressCheckbox = (newValue) => {
     }
 }
 
-var setPreferences = (data) => {
-    console.log("setPreferences:");
-    console.log(data);
-    setDaysInProgressCheckbox(data.add_days_in_progress);
+var readPrefsFromStorage = () => {
+    chrome.storage.local.get(["add_days_in_progress"]).then((result) => {
+        var add_days_in_progress = result.add_days_in_progress;
+        if(!add_days_in_progress || add_days_in_progress == "null") {
+            add_days_in_progress = "true";
+        }
+        updateDaysInProgressCheckbox(add_days_in_progress);
+      });
 }
 
-var fetchPreferences = () => {
-    messageSend("get_prefs", null, setPreferences,handleMessageSendError);
-}
-
-var savePreferences = (prefs) => {
-    messageSend("set",prefs,handleMessageSendResponse,handleMessageSendError);
+var writePrefsToStorage = (prefs) => {
+    chrome.storage.local.set({ add_days_in_progress: prefs.add_days_in_progress.toString() }).then(() => {
+        sendRefreshEvent();
+    });
 }
 
 var collectPreferences = () => {
-    return { add_days_in_progress : document.getElementById("days_in_progress").checked.toString()};
+    var add_days_in_progress_cb = document.getElementById("days_in_progress").checked.toString();
+    return { add_days_in_progress : add_days_in_progress_cb};
 }
 
 var handleDaysInProgressPrefChange = () => {
-    savePreferences(collectPreferences());
+    writePrefsToStorage(collectPreferences());
 }
 
 var handleRefreshClicked = () => {
-    messageSend("refresh",null);
+    sendRefreshEvent();
 }
 
 document.addEventListener("click", (e) => { 
@@ -59,4 +73,4 @@ document.addEventListener("click", (e) => {
     }
 });
 
-fetchPreferences();
+readPrefsFromStorage();

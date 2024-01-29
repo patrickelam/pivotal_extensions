@@ -1,6 +1,5 @@
 const DAY_CHARACTER = "🌞"; // https://apps.timwhitlock.info/unicode/inspect/hex/1F31E
 
-var session_cookie = "";
 
 var dayString = (days) => {
     var text = "";
@@ -35,9 +34,9 @@ var removeWeekends = (days) => {
 }
 
 var removeDaysInProgress = () => {
-  var old_suns = document.querySelectorAll('[type="pe_suns"]');
-  if(old_suns != undefined) {
-      old_suns.forEach((old_el) => {
+  var old_elements = document.querySelectorAll('[type="pivotal_extensions_days_in_progress"]');
+  if(old_elements != undefined) {
+        old_elements.forEach((old_el) => {
           old_el.remove();
       });
   }
@@ -45,11 +44,10 @@ var removeDaysInProgress = () => {
 
 var updateStoryHtml = (id, days) => {
     var element = document.querySelector(".story_" + id + " .story_name");
-
     if(element != null) {
       var span = document.createElement("span");
       span.innerText = dayString(days);
-      span.setAttribute("type","pe_suns");
+      span.setAttribute("type","pivotal_extensions_days_in_progress");
       element.appendChild(span);
     } else {
       console.log("updateStoryHTML - element is null");
@@ -79,28 +77,8 @@ var fetchStoryHistoriesAndUpdateHTML = async (data) => {
 }
 
 var addDaysInProgress = async () => {
-    console.log("addDaysInProgress");
-    var started_stories = await fetchStartedStories();
-  
-    await fetchStoryHistoriesAndUpdateHTML(started_stories);
-}
-
-var handleRefreshCommand = (data) => {
-    setHeaders(data.cookie);
-    if(data.prefs.add_days_in_progress === "true") {
-        addDaysInProgress();
-    } else {
-      console.log("removeDaysInProgress");
-        removeDaysInProgress();
+    if(headersAreSet()) {
+        var started_stories = await fetchStartedStories();
+        await fetchStoryHistoriesAndUpdateHTML(started_stories);
     }
 }
-
-var handleMessage = (request, sender, sendResponse) => {
-    console.log("days_in_progress handling message:");
-    console.log(request);
-    if(request.command === "refresh") {
-        handleRefreshCommand(request.data);
-    }
-}
-
-chrome.runtime.onMessage.addListener(handleMessage);
