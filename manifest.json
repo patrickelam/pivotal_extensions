@@ -33,7 +33,8 @@
         "default_popup": "options/options.html"
     },
     "background": {
-      "service_worker": "background.js"
+      "scripts": ["background.js"],
+      "type": "module"
     },
     "manifest_version": 3
   }

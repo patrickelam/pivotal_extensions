@@ -38,7 +38,7 @@ var handlePageFinishedLoading = (event) => {
 chrome.webRequest.onBeforeSendHeaders.addListener(
     scrapeHeaders,
     { urls: [PATTERN] },
-    ["requestHeaders", "extraHeaders"],
+    ["requestHeaders"],
 );
 
 chrome.webNavigation.onCompleted.addListener(
