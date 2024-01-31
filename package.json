@@ -1,0 +1,15 @@
+{
+  "name": "pivotal_extensions",
+  "version": "1.0.0",
+  "description": "Inspired by [Story Time](https://github.com/bertrandmoulard/story_time/tree/master), the purpose of this extension is to make tweaks to Pivotal Tracker's UI to enhance usability. The first piece of functionality is (like Story Time), to set a visual indicator of how long a card has been in progress; but several other features are planned.",
+  "scripts": {
+    "build-chrome": "node scripts/build-chrome.js",
+    "build-firefox": "node scripts/build-firefox.js"
+  },
+  "author": "Patrick Elam",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra" : "latest",
+    "archiver" : "latest"
+  }
+}
