@@ -8,7 +8,13 @@ Pivotal Extensions uses the authentication information of the logged-in user to 
 
 As of the creation of this project, it is not possible to create a manifest v3 extension that is compatible with both Chrome and Firefox. The goal with this project was to have something compatible with both browsers, so I moved browser specific files to their own folder, and created a couple of node scripts to pull the browser extensions together.
 
-There are two commands, `build-chrome` and `build-firefox`. Run either to produce a zip containing the extension in the `output` folder.
+There are two build commands, `build-chrome` and `build-firefox`. Run either to produce a zip containing the extension in the `output` folder. 
+
+```
+npm run build-chrome
+```
+
+There is also the `clean` command to clear the temporary directories.
 
 ## License
 

@@ -5,10 +5,12 @@ const OUTPUT_DIR = 'output';
 const BUILD_DIR = 'build';
 
 const cleanOutputDir = () => {
-
     if (fs.existsSync(OUTPUT_DIR)){
         fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
     }
+}
+
+const createOutputDir = () => {
     fs.mkdirSync(OUTPUT_DIR);
 }
 
@@ -16,6 +18,9 @@ const cleanBuildDir = () => {
     if (fs.existsSync(BUILD_DIR)){
         fs.rmSync(BUILD_DIR, { recursive: true, force: true });
     }
+}
+
+const createBuildDir = () => {
     fs.mkdirSync(BUILD_DIR);
 }
 
@@ -74,6 +79,8 @@ module.exports = {
     BUILD_DIR,
     cleanOutputDir,
     cleanBuildDir,
+    createOutputDir,
+    createBuildDir,
     moveJSFiles,
     moveIcons,
     moveOptionsMenu,
