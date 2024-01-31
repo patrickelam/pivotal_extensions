@@ -1,0 +1,1 @@
+Pivotal Extensions does not collect any user data.
