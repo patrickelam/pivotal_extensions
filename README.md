@@ -6,6 +6,8 @@ Pivotal Extensions uses the authentication information of the logged-in user to 
 
 ![options menu](./screenshots/options-chrome.png)
 
+![days in progress](./screenshots/days_in_progress.png)
+
 # Building
 
 As of the creation of this project, it is not possible to create a manifest v3 extension that is compatible with both Chrome and Firefox. The goal with this project was to have something compatible with both browsers, so I moved browser specific files to their own folder, and created a couple of node scripts to pull the browser extensions together.
