@@ -1,1 +1,1 @@
-Pivotal Extensions does not collect any user data.
+Pivotal Extensions does not collect any user data. It does use authentication information from Pivotal Tracker's page to make additional requests to the Pivotal Tracker API, but this information is only stored in-memory while the user is on the page, and is not transmitted in any other way.
