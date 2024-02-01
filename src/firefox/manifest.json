@@ -15,7 +15,6 @@
         "128": "icons/hammer-128.png"
     },
     "permissions": [
-        "cookies",
         "storage",
         "activeTab",
         "webRequest",
