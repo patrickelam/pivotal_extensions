@@ -65,9 +65,9 @@ var updateStory = (data, id) => {
     }
 }
 
-var fetchStoryHistoriesAndUpdateHTML = async (data) => {
+var fetchStoryHistoriesAndUpdateHTML = async (data, forceRefresh) => {
     for (var i=0; i < data.length;i++) {
-        var history = await fetchStoryHistory(data[i].id);
+        var history = await fetchStoryHistory(data[i].id, forceRefresh);
         data[i].history = history;
     }
     removeDaysInProgress();
@@ -76,9 +76,9 @@ var fetchStoryHistoriesAndUpdateHTML = async (data) => {
   }
 }
 
-var addDaysInProgress = async () => {
+var addDaysInProgress = async (forceRefresh) => {
     if(headersAreSet()) {
-        var started_stories = await fetchStartedStories();
-        await fetchStoryHistoriesAndUpdateHTML(started_stories);
+        var started_stories = await fetchStartedStories(forceRefresh);
+        await fetchStoryHistoriesAndUpdateHTML(started_stories, forceRefresh);
     }
 }

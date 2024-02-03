@@ -2,6 +2,8 @@ const BASE_URL = "https://www.pivotaltracker.com/services/v5";
 
 var headers;
 var requestInit;
+var startedStories;
+var storyHistories = {};
 
 var headersAreSet = () => {
     var set = !(headers === undefined);
@@ -30,16 +32,28 @@ var extractProjectId = () => {
     return urlElements[urlElements.length - 1];
 }
 
-var fetchStartedStories = async () => {
-    const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/stories?filter=state:started`);
-    var response = await fetch(myRequest, requestInit);
-    var data = await response.json();
-    return data;
+var fetchStartedStories = async (forceRefresh) => {
+    console.log(`fetchStartedStories`);
+    //console.log(forceRefresh);
+    //console.log(startedStories);
+    if(startedStories === undefined || forceRefresh) {
+        console.log("API Call: Fetching started stories");
+        const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/stories?filter=state:started`);
+        var response = await fetch(myRequest, requestInit);
+        startedStories = await response.json();
+    }
+    return startedStories;
 }
 
-var fetchStoryHistory = async (id) => {
-    const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/stories/${id}/activity`);
-    var response = await fetch(myRequest, requestInit);
-    var data = await response.json();
-    return data;
+var fetchStoryHistory = async (id, forceRefresh) => {
+    console.log(`fetchStoryHistory ${id} ${forceRefresh}`);
+    //console.log(storyHistories.id);
+    if(storyHistories.id === undefined || forceRefresh) {
+        console.log(`API Call: Fetching history for id: ${id}`);
+        const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/stories/${id}/activity`);
+        var response = await fetch(myRequest, requestInit);
+        storyHistories.id = await response.json();
+        //console.log(storyHistories.id);
+    }
+    return storyHistories.id;
 }
