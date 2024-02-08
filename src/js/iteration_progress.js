@@ -1,4 +1,47 @@
 
+var createContainerHTML = () => {
+    var containerElement = document.createElement("div");
+    containerElement.setAttribute("class", "iteration_progress_container");
+    containerElement.setAttribute("type", "pivotal_extensions_iteration_progress");
+    return containerElement;
+}
+
+var createHeaderHTML = (title) => {
+    var headerElement = document.createElement("div");
+    headerElement.setAttribute("class", "progress_header");
+    headerElement.innerText = `${title}`;
+    return headerElement;
+}
+
+var createProgressBarSegmentLabelHTML = (label) => {
+    var labelElement = document.createElement("div");
+    labelElement.setAttribute("class", "progress_bar_label");
+    labelElement.innerText = label;
+    return labelElement;
+}
+
+var createProgressBarSegmentHTML = (label, color, width) => {
+    var segment = document.createElement("li");
+    segment.setAttribute("class", "progress_bar");
+    segment.style["background-color"] = color;
+    segment.style["width"] = width;
+    segment.appendChild(createProgressBarSegmentLabelHTML(label));
+    return segment;
+}
+
+var createProgressBarHTML = (segments) => {
+    var containerElement = document.createElement("div");
+    containerElement.setAttribute("class", "progress_background");
+    var bar = document.createElement("ul");
+    bar.setAttribute("class", "flexbox");
+    for(var i = 0; i < segments.length; i++) {
+        var segmentElement = createProgressBarSegmentHTML(segments[i].label, segments[i].color, segments[i].width);
+        bar.appendChild(segmentElement);
+    }
+    containerElement.appendChild(bar);
+    return containerElement;
+}
+
 var insertHTML = (
     storiesAcceptedPercent,
     storiesDeliveredPercent,
@@ -11,37 +54,33 @@ var insertHTML = (
     iterationCompletePercent) => 
     {
     var containerElement = document.querySelector(`#panel_backlog_${extractProjectId()}`);
-    if(containerElement != null) var headerElement = containerElement.querySelector("header");
-    if(containerElement != null && headerElement != null) {
-        var newElement = `
-        <div class="iteration_progress_container" type="pivotal_extensions_iteration_progress">
-            <div class="progress_header">Time:</div>
-            <div class="progress_background">
-                <ul class="flexbox">
-                    <li class="progress_bar" style="background-color: green; width: ${iterationCompletePercent}%"></li>
-                </ul>
-            </div>
-            <div class="progress_header">Points:</div>
-            <div class="progress_background">
-                <ul class="flexbox">
-                    <li class="progress_bar" style="background-color: green; width: ${pointsAcceptedPercent}%"><div class="progress_bar_label">Accepted</div></li>
-                    <li class="progress_bar" style="background-color: blue; width: ${pointsDeliveredPercent}%"><div class="progress_bar_label">Delivered</div></li>
-                    <li class="progress_bar" style="background-color: yellow; width: ${pointsInProgressPercent}%"><div class="progress_bar_label">In Progress</div></li>
-                    <li class="progress_bar" style="background-color: orange; width: ${pointsPlannedPercent}%"><div class="progress_bar_label">Planned</div></li>
-                </ul>
-            </div>
-            <div class="progress_header">Stories:</div>
-            <div class="progress_background">
-                <ul class="flexbox">
-                    <li class="progress_bar" style="background-color: green; width: ${storiesAcceptedPercent}%"><div class="progress_bar_label">Accepted</div></li>
-                    <li class="progress_bar" style="background-color: blue; width: ${storiesDeliveredPercent}%"><div class="progress_bar_label">Delivered</div></li>
-                    <li class="progress_bar" style="background-color: yellow; width: ${storiesInProgressPercent}%"><div class="progress_bar_label">In Progress</div></li>
-                    <li class="progress_bar" style="background-color: orange; width: ${storiesPlannedPercent}%"><div class="progress_bar_label">Planned</div></li>
-                </ul>
-            </div>
-        </div>`;
 
-        headerElement.insertAdjacentHTML("beforebegin", newElement);
+    if(containerElement != null) var wrapperElement = containerElement.firstChild;
+    if(containerElement != null && wrapperElement != null) var headerElement = wrapperElement.querySelector("header");
+    if(containerElement != null && wrapperElement != null && headerElement != null) {
+        var newElement = createContainerHTML();
+        newElement.appendChild(createHeaderHTML("Time"));
+        newElement.appendChild(createProgressBarHTML([
+            {label: "Time:", color: "green", width: iterationCompletePercent}
+        ]));
+
+        newElement.appendChild(createHeaderHTML("Points"));
+        newElement.appendChild(createProgressBarHTML([
+            {label: "Accepted", color: "green", width: `${pointsAcceptedPercent}%`},
+            {label: "Delivered", color: "blue", width: `${pointsDeliveredPercent}%`},
+            {label: "In Progress", color: "yellow", width: `${pointsInProgressPercent}%`},
+            {label: "Unstarted", color: "orange", width: `${pointsPlannedPercent}%`}
+        ]));
+
+        newElement.appendChild(createHeaderHTML("Stories"));
+        newElement.appendChild(createProgressBarHTML([
+            {label: "Accepted", color: "green", width: storiesAcceptedPercent},
+            {label: "Delivered", color: "blue", width: storiesDeliveredPercent},
+            {label: "In Progress", color: "yellow", width: storiesInProgressPercent},
+            {label: "Unstarted", color: "orange", width: storiesPlannedPercent}
+        ]));
+
+        wrapperElement.insertBefore(newElement, wrapperElement.firstChild);
     }
 }
 
