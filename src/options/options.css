@@ -30,6 +30,33 @@ button[type="reset"]:hover {
   background-color: #eaea9d;
 }
 
+.popup_content {
+  -webkit-margin-end: 16px;
+}
+
+ul.flexbox {
+  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox;      /* TWEENER - IE 10 */
+  display: -webkit-flex;     /* NEW - Chrome */
+  display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+.option_row {
+
+}
+
+.option_label{
+  flex-grow:1;
+  padding-left: 6px;
+  padding-top: 6px;
+}
+
+.option_switch {
+}
+
 /* toggle switch */
 /* The switch - the box around the slider */
 .switch {

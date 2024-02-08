@@ -51,28 +51,27 @@ var updateStoryHtml = (id, days) => {
       element.appendChild(span);
     } else {
       console.log("updateStoryHTML - element is null");
-    }
-    
+    }   
 }
 
-var updateStory = (data, id) => {
-    for(var i = 0; i < data.length; i++) {
-        if(data[i].highlight == "started") {
-            var days = Math.ceil((Date.now() - Date.parse(data[i].occurred_at)) / 86400000);
-            updateStoryHtml(id, removeWeekends(days));
+var updateStory = (story) => {
+    for(var i = 0; i < story.history.length; i++) {
+        if(story.history[i].highlight == "started") {
+            var days = Math.ceil((Date.now() - Date.parse(story.history[i].occurred_at)) / 86400000);
+            updateStoryHtml(story.id, removeWeekends(days));
             return;
-        }
-    }
+        }  
+    }    
 }
 
-var fetchStoryHistoriesAndUpdateHTML = async (data, forceRefresh) => {
-    for (var i=0; i < data.length;i++) {
-        var history = await fetchStoryHistory(data[i].id, forceRefresh);
-        data[i].history = history;
+var fetchStoryHistoriesAndUpdateHTML = async (started_stories, forceRefresh) => {
+    for (var i=0; i < started_stories.length;i++) {
+        var history = await fetchStoryHistory(started_stories[i].id, forceRefresh);
+        started_stories[i].history = history;
     }
     removeDaysInProgress();
-    for (var i=0; i < data.length;i++) {
-      updateStory(data[i].history, data[i].id);
+    for (var i=0; i < started_stories.length;i++) {
+      updateStory(started_stories[i]);
   }
 }
 

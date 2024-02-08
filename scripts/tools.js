@@ -28,6 +28,10 @@ const moveJSFiles = () => {
     fs.copySync('src/js/', `${BUILD_DIR}`);
 }
 
+const moveCSSFiles = () => {
+    fs.copySync('src/css/', `${BUILD_DIR}`);
+}
+
 const moveIcons = () => {
     fs.copySync('icons/', `${BUILD_DIR}/icons`);
 }
@@ -82,6 +86,7 @@ module.exports = {
     createOutputDir,
     createBuildDir,
     moveJSFiles,
+    moveCSSFiles,
     moveIcons,
     moveOptionsMenu,
     moveFirefoxSpecificFiles,

@@ -31,19 +31,8 @@ var scrapeHeaders = (interceptedRequest) => {
     });
 }
 
-var handlePageFinishedLoading = (event) => {
-    sendEvent("page_finished_loading", {}, handleSendEventResponse, handleSendEventError);
-}
-
 chrome.webRequest.onBeforeSendHeaders.addListener(
     scrapeHeaders,
     { urls: [PATTERN] },
     ["requestHeaders", "extraHeaders"],
-);
-
-chrome.webNavigation.onCompleted.addListener(
-    handlePageFinishedLoading, 
-    {url: [
-        {urlMatches : PATTERN}
-    ]}
 );

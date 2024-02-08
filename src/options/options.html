@@ -6,14 +6,30 @@
   </head>
 
   <body>
-    <div id="popup-content">
-      Refresh Extension
+    <div class="popup_content">
       <button id="refresh">Refresh</button>
-      Days In Progress
-      <label class="switch">
-        <input type="checkbox" id="days_in_progress">
-        <span class="slider round"></span>
-      </label>
+      <div class="option_row">
+        <ul class="flexbox">
+          <li class="option_label">Days In Progress</li>
+          <li class="option_switch">
+            <label class="switch">
+              <input type="checkbox" id="days_in_progress">
+              <span class="slider round"></span>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div class="option_row">
+        <ul class="flexbox">
+          <li class="option_label">Iteration Progress</li>
+          <li class="option_switch">
+            <label class="switch">
+              <input type="checkbox" id="iteration_progress">
+              <span class="slider round"></span>
+            </label>
+          </li>
+        </ul>
+      </div>
     </div>
     <script src="options.js"></script>
   </body>

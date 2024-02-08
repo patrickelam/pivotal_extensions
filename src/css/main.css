@@ -1,0 +1,31 @@
+ul.flexbox {
+    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox;      /* TWEENER - IE 10 */
+    display: -webkit-flex;     /* NEW - Chrome */
+    display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+.progress_bar_label {
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.progress_background {
+    height: 25px;
+    width: 100%;
+    background-color: lightslategray;
+}
+
+.progress_header {
+    color: white;
+    font-size: medium;
+}
+
+.progress_bar {
+    height: 25px;
+}
+
+.iteration_progress_container {
+    height: 180px;
+}

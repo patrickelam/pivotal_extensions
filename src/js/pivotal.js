@@ -4,6 +4,7 @@ var headers;
 var requestInit;
 var startedStories;
 var storyHistories = {};
+var currentIteration;
 
 var headersAreSet = () => {
     var set = !(headers === undefined);
@@ -33,11 +34,7 @@ var extractProjectId = () => {
 }
 
 var fetchStartedStories = async (forceRefresh) => {
-    console.log(`fetchStartedStories`);
-    //console.log(forceRefresh);
-    //console.log(startedStories);
     if(startedStories === undefined || forceRefresh) {
-        console.log("API Call: Fetching started stories");
         const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/stories?filter=state:started`);
         var response = await fetch(myRequest, requestInit);
         startedStories = await response.json();
@@ -45,15 +42,20 @@ var fetchStartedStories = async (forceRefresh) => {
     return startedStories;
 }
 
+var fetchCurrentIteration = async (forceRefresh) => {
+    if(currentIteration === undefined || forceRefresh) {
+        const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/iterations?scope=current`);
+        var response = await fetch(myRequest, requestInit);
+        currentIteration = await response.json();
+    }
+    return currentIteration;
+}
+
 var fetchStoryHistory = async (id, forceRefresh) => {
-    console.log(`fetchStoryHistory ${id} ${forceRefresh}`);
-    //console.log(storyHistories.id);
-    if(storyHistories.id === undefined || forceRefresh) {
-        console.log(`API Call: Fetching history for id: ${id}`);
+    if(storyHistories[id] === undefined || forceRefresh) {
         const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/stories/${id}/activity`);
         var response = await fetch(myRequest, requestInit);
-        storyHistories.id = await response.json();
-        //console.log(storyHistories.id);
+        storyHistories[id] = await response.json();
     }
-    return storyHistories.id;
+    return storyHistories[id];
 }

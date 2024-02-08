@@ -1,12 +1,29 @@
 # Pivotal Extensions
 
-Inspired by [Story Time](https://github.com/bertrandmoulard/story_time/tree/master), the purpose of this extension is to make tweaks to Pivotal Tracker's UI to enhance usability. The first piece of functionality is (like Story Time), to set a visual indicator of how long a card has been in progress; but several other features are planned.
+Inspired by [Story Time](https://github.com/bertrandmoulard/story_time/tree/master), the purpose of this extension is to make tweaks to [Pivotal Tracker's](https://www.pivotaltracker.com/) project panel UI to give teams some important information at a glance. Current features:
 
-Pivotal Extensions uses the authentication information of the logged-in user to communicate with Pivotal's API, instead of asking the user for their API key. This is both more convenient and more secure, as nothing is stored in local storage except the preferences for the extension.
+- Days in Progress
+- Iteration Progress
+
+# Usage
+
+Features can be toggled on / off in the options menu.
 
 ![options menu](./screenshots/options-chrome.png)
 
+> Note that in Firefox, you may have to right-click the extension after installing it and select `Always Allow on www.pivotaltracker.com` for it to work initially.
+
+**Days in Progress** Adds a sun emoji for every day a story has been in progress. This helps to bring visibility to long-running stories that "should be done today" for days at a time.
+
 ![days in progress](./screenshots/days_in_progress.png)
+
+**Iteration Progress** Adds a series of progress bars above the current iteration column header giving a visual indication of how far through the iteration the team is in stories and points compared to the current date.
+
+![iteration progress](./screenshots/iteration_progress.png)
+
+### Authentication
+
+Pivotal Extensions uses the authentication information of the logged-in user to communicate with Pivotal's API, instead of asking the user for their API key. This is both more convenient and more secure, as nothing is stored in local storage except the preferences for the extension.
 
 # Building
 
