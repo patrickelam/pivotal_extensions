@@ -18,8 +18,7 @@
     "permissions": [
         "storage",
         "activeTab",
-        "webRequest",
-        "webNavigation"
+        "webRequest"
     ],
     "host_permissions":[
       "https://www.pivotaltracker.com/n/projects/*"
