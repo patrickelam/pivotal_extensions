@@ -9,6 +9,7 @@ ul.flexbox {
 .progress_bar_label {
     margin-left: 5px;
     margin-top: 5px;
+    color: white;
 }
 
 .progress_background {

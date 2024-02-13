@@ -1,5 +1,7 @@
 const PATTERN = "www.pivotaltracker.com";
 const SAVE_AND_COLLAPSE = "Save and collapse";
+const SAVE_AMP_COLLAPSE = "Save &amp; collapse";
+const SAVE_AMP2_COLLAPSE = "Save & collapse";
 
 
 var readPrefsFromStorageAndUpdate = (forceRefresh) => {
@@ -82,7 +84,7 @@ readPrefsFromStorageAndUpdate(false);
 
 
 document.addEventListener("click", (e) => { 
-    if (e.target.title === SAVE_AND_COLLAPSE) {
+    if (e.target.title === SAVE_AND_COLLAPSE || e.target.title === SAVE_AMP_COLLAPSE || e.target.title === SAVE_AMP2_COLLAPSE) {
         readPrefsFromStorageAndUpdate(false);
     }
 });
