@@ -61,7 +61,7 @@ var insertHTML = (
         var newElement = createContainerHTML();
         newElement.appendChild(createHeaderHTML("Time"));
         newElement.appendChild(createProgressBarHTML([
-            {label: "Time:", color: "green", width: iterationCompletePercent}
+            {label: "Time:", color: "green", width: `${iterationCompletePercent}%`}
         ]));
 
         newElement.appendChild(createHeaderHTML("Points"));
