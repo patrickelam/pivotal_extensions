@@ -74,10 +74,10 @@ var insertHTML = (
 
         newElement.appendChild(createHeaderHTML("Stories"));
         newElement.appendChild(createProgressBarHTML([
-            {label: "Accepted", color: "green", width: storiesAcceptedPercent},
-            {label: "Delivered", color: "blue", width: storiesDeliveredPercent},
-            {label: "In Progress", color: "yellow", width: storiesInProgressPercent},
-            {label: "Unstarted", color: "orange", width: storiesPlannedPercent}
+            {label: "Accepted", color: "green", width: `${storiesAcceptedPercent}%`},
+            {label: "Delivered", color: "blue", width: `${storiesDeliveredPercent}%`},
+            {label: "In Progress", color: "yellow", width: `${storiesInProgressPercent}%`},
+            {label: "Unstarted", color: "orange", width: `${storiesPlannedPercent}%`}
         ]));
 
         wrapperElement.insertBefore(newElement, wrapperElement.firstChild);
