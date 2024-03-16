@@ -1,20 +1,22 @@
-const PATTERN = "www.pivotaltracker.com";
 const SAVE_AND_COLLAPSE = "Save and collapse";
 const SAVE_AMP_COLLAPSE = "Save &amp; collapse";
 const SAVE_AMP2_COLLAPSE = "Save & collapse";
 
+const ADD_DAYS_IN_PROGRESS = "add_days_in_progress"
+const ITERATION_PROGRESS = "iteration_progress"
+
 
 var readPrefsFromStorageAndUpdate = (forceRefresh) => {
-    chrome.storage.local.get(["add_days_in_progress","iteration_progress"]).then((result) => {
-        var add_days_in_progress = result.add_days_in_progress;
+    chrome.storage.local.get([ADD_DAYS_IN_PROGRESS,ITERATION_PROGRESS]).then((result) => {
+        var add_days_in_progress = result.ADD_DAYS_IN_PROGRESS;
         if(!add_days_in_progress) add_days_in_progress = "true";
 
-        var iteration_progress = result.iteration_progress;
+        var iteration_progress = result.ITERATION_PROGRESS;
         if(!iteration_progress) iteration_progress = "true";
 
         var preferences = {
-            add_days_in_progress : add_days_in_progress, 
-            iteration_progress : iteration_progress
+            [ITERATION_PROGRESS] : add_days_in_progress, 
+            [ADD_DAYS_IN_PROGRESS] : iteration_progress
         };
         updatePage(preferences, forceRefresh);
       });
@@ -60,24 +62,6 @@ var handleMessage = (request, sender, sendResponse) => {
     }
 }
 
-// https://stackoverflow.com/questions/5525071/how-to-wait-until-an-element-exists
-var waitForElm = (selector) => {
-    return new Promise(resolve => {
-        if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector));
-        }
-        const observer = new MutationObserver(mutations => {
-            if (document.querySelector(selector)) {
-                observer.disconnect();
-                resolve(document.querySelector(selector));
-            }
-        });
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true
-        });
-    });
-}
 
 chrome.runtime.onMessage.addListener(handleMessage);
 readPrefsFromStorageAndUpdate(false);
@@ -89,6 +73,6 @@ document.addEventListener("click", (e) => {
     }
 });
 
-waitForElm(`#panel_backlog_${extractProjectId()}`).then((elm) => {
+waitForElement(`#panel_backlog_${extractProjectId()}`).then((elm) => {
     readPrefsFromStorageAndUpdate(false);
 });

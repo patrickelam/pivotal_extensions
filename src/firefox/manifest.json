@@ -1,13 +1,36 @@
 {
     "name": "Pivotal Extensions",
-    "version": "0.2.4",
+    "version": "0.3.0",
     "description": "Make tweaks to Pivotal Tracker's UI to enhance usability.",
     "content_scripts": [
       {
         "matches": ["https://www.pivotaltracker.com/n/projects/*"],
-        "js": ["pivotal.js","iteration_progress.js","days_in_progress.js","main.js"],
-        "css": ["main.css"],
+        "js": [
+          "pivotal.js",
+          "iteration_progress.js",
+          "days_in_progress.js",
+          "page_helpers.js",
+          "project_view.js"
+        ],
+        "css": ["project_view.css"],
         "run_at": "document_start"
+      },
+      {
+        "matches": ["https://www.pivotaltracker.com/reports/v2/projects/*"],
+        "js": [
+          "pivotal.js",
+          "page_helpers.js",
+          "cycle_time_by_point.js",
+          "reports_view.js"
+        ],
+        "css": ["reports_view.css"],
+        "run_at": "document_start"
+      }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": ["assets/loading.gif"],
+        "matches": ["https://www.pivotaltracker.com/reports/v2/projects/*"]
       }
     ],
     "icons": {
@@ -21,7 +44,8 @@
         "webRequest"
     ],
     "host_permissions":[
-      "https://www.pivotaltracker.com/n/projects/*"
+      "https://www.pivotaltracker.com/n/projects/*",
+      "https://www.pivotaltracker.com/reports/v2/projects/*"
     ],
     "action": {
         "default_icon": {
@@ -42,5 +66,4 @@
         "id": "pivotal_extensions@patrickelam.com"
       }
     }
-    
-  }
+}

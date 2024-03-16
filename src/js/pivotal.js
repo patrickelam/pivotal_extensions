@@ -30,7 +30,9 @@ var setHeaders = (cookie) => {
 
 var extractProjectId = () => {
     var urlElements = window.location.href.split("/");
-    return urlElements[urlElements.length - 1];
+    var projectsSegment = urlElements.findIndex((e) => e === "projects");
+    var id = urlElements[projectsSegment+1];
+    return id;
 }
 
 var fetchStartedStories = async (forceRefresh) => {
@@ -52,6 +54,7 @@ var fetchCurrentIteration = async (forceRefresh) => {
 }
 
 var fetchStoryHistory = async (id, forceRefresh) => {
+    //console.log(`fetching history for ${id}, forced ${forceRefresh}`);
     if(storyHistories[id] === undefined || forceRefresh) {
         const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/stories/${id}/activity`);
         var response = await fetch(myRequest, requestInit);
@@ -59,3 +62,20 @@ var fetchStoryHistory = async (id, forceRefresh) => {
     }
     return storyHistories[id];
 }
+
+var fetchPrecedingIterations = async (iterations_to_fetch) => {
+    const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/iterations?scope=done&offset=-${iterations_to_fetch}`);
+    var response = await fetch(myRequest, requestInit);
+    var iterations = await response.json();
+    return iterations;
+}
+
+/*
+var fetchAllStories = async (forceRefresh) => {
+    // TODO caching
+    const myRequest = new Request(`${BASE_URL}/projects/${extractProjectId()}/stories`);
+    var response = await fetch(myRequest, requestInit);
+    var allStories = await response.json();
+    return allStories;
+}
+*/

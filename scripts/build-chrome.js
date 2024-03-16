@@ -9,5 +9,6 @@ tools.moveJSFiles();
 tools.moveCSSFiles();
 tools.moveIcons();
 tools.moveOptionsMenu();
+tools.moveAssets();
 tools.moveChromeSpecificFiles();
 tools.zipChromeExtension();

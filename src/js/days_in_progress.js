@@ -9,6 +9,7 @@ var dayString = (days) => {
     return text + " ";
 };
 
+// https://github.com/bertrandmoulard/story_time/blob/master/story_time.js
 var removeWeekends = (days) => {
     var weekDay = (new Date()).getDay();
     if(weekDay == 6) {

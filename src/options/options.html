@@ -8,6 +8,7 @@
   <body>
     <div class="popup_content">
       <button id="refresh">Refresh</button>
+      <div class="section_title">Project Page</div>
       <div class="option_row">
         <ul class="flexbox">
           <li class="option_label">Days In Progress</li>
@@ -27,6 +28,26 @@
               <input type="checkbox" id="iteration_progress">
               <span class="slider round"></span>
             </label>
+          </li>
+        </ul>
+      </div>
+      <div class="section_title">Cycle Time By Point</div>
+      <div class="option_row">
+        <ul class="flexbox">
+          <li class="option_label">Cycle Time Chart</li>
+          <li class="option_switch">
+            <label class="switch">
+              <input type="checkbox" id="cycle_time_chart">
+              <span class="slider round"></span>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div class="option_row">
+        <ul class="flexbox">
+          <li class="option_label">Iterations to Track</li>
+          <li class="option_number_input">
+            <input type="number" id="cycle_time_iterations" min="1" max="30">
           </li>
         </ul>
       </div>

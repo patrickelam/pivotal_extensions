@@ -1,6 +1,6 @@
 html,
 body {
-  width: 200px;
+  width: 300px;
 }
 
 .hidden {
@@ -55,6 +55,18 @@ ul.flexbox {
 }
 
 .option_switch {
+}
+
+.section_title {
+  font-weight: bold;
+}
+
+.option_number_input {
+}
+
+#cycle_time_iterations {
+  width: 50px;
+  margin-right: 3px;
 }
 
 /* toggle switch */

@@ -4,12 +4,13 @@ Inspired by [Story Time](https://github.com/bertrandmoulard/story_time/tree/mast
 
 - Days in Progress
 - Iteration Progress
+- Cycle Time By Point Detail Chart
 
 # Usage
 
 Features can be toggled on / off in the options menu.
 
-![options menu](./screenshots/options-chrome.png)
+![options menu](./screenshots/options_chrome.png)
 
 > Note that in Firefox, you may have to right-click the extension after installing it and select `Always Allow on www.pivotaltracker.com` for it to work initially.
 
@@ -20,6 +21,10 @@ Features can be toggled on / off in the options menu.
 **Iteration Progress** Adds a series of progress bars above the current iteration column header giving a visual indication of how far through the iteration the team is in stories and points compared to the current date.
 
 ![iteration progress](./screenshots/iteration_progress.png)
+
+**Cycle Time By Point Detail Chart** Adds a chart on the Analytics -> Cycle Time that gives adds more details to the Cycle Time by Point chart. Specifically, it gives the average time a story with a given estimate spends in total, and in several key states over the given number of iterations. 
+
+![cycle time chart](./screenshots/cycle_time_chart.png)
 
 ### Authentication
 

@@ -40,6 +40,10 @@ const moveOptionsMenu = () => {
     fs.copySync('src/options/', `${BUILD_DIR}/options`);
 }
 
+const moveAssets = () => {
+    fs.copySync('src/assets/', `${BUILD_DIR}/assets`);
+}
+
 const moveFirefoxSpecificFiles = () => {
     fs.copySync('src/firefox/', `${BUILD_DIR}`);
 }
@@ -89,6 +93,7 @@ module.exports = {
     moveCSSFiles,
     moveIcons,
     moveOptionsMenu,
+    moveAssets,
     moveFirefoxSpecificFiles,
     moveChromeSpecificFiles,
     zipFirefoxExtension,
