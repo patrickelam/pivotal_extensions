@@ -46,9 +46,9 @@ var createHeaderHTML = (iterations) => {
     var headerElement = document.createElement("div");
     headerElement.setAttribute("class","chart_header");
     if(iterations === 1) {
-        headerElement.innerHTML = `Average Time Spent Over 1 Iteration (hours)`;
+        headerElement.innerText = `Average Time Spent Over 1 Iteration (hours)`;
     } else {
-        headerElement.innerHTML = `Average Time Spent Over ${iterations} Iterations (hours)`;
+        headerElement.innerText = `Average Time Spent Over ${iterations} Iterations (hours)`;
     }
     headerElement.appendChild(createSubHeaderHTML());
     return headerElement;
