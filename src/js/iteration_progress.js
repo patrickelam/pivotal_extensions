@@ -53,7 +53,7 @@ var insertHTML = (
     pointsPlannedPercent,
     iterationCompletePercent) => 
     {
-    var containerElement = document.querySelector(`#panel_backlog_${extractProjectId()}`);
+    var containerElement = document.querySelector(`#panel_backlog_${extractProjectIdFromURL()}`);
 
     if(containerElement != null) var wrapperElement = containerElement.firstChild;
     if(containerElement != null && wrapperElement != null) var headerElement = wrapperElement.querySelector("header");
@@ -85,7 +85,7 @@ var insertHTML = (
 }
 
 var addIterationProgress = async (forceRefresh) => {
-    if(headersAreSet()) {
+    if(cookieIsSet()) {
         removeIterationProgress();
         var iterationList = await fetchCurrentIteration(forceRefresh);
         var stories = iterationList[0]["stories"];

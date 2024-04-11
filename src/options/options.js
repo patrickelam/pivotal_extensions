@@ -78,7 +78,7 @@ var readPrefsFromStorage = () => {
 var writePrefsToStorage = (prefs) => {
     chrome.storage.local.set({ 
         [ADD_DAYS_IN_PROGRESS]: prefs[ADD_DAYS_IN_PROGRESS].toString(),
-        [ITERATION_PROGRESS]: prefs[ADD_DAYS_IN_PROGRESS].toString(),
+        [ITERATION_PROGRESS]: prefs[ITERATION_PROGRESS].toString(),
         [CYCLE_TIME_CHART]: prefs[CYCLE_TIME_CHART].toString(),
         [CYCLE_TIME_ITERATIONS]: prefs[CYCLE_TIME_ITERATIONS].toString()
     }).then(() => {

@@ -1,4 +1,5 @@
-const TRACKABLE_STATES = ["started", "finished", "delivered", "accepted"];
+const TRACKABLE_STATES = ["unstarted", "started", "finished", "delivered", "accepted"];
+const DISPLAYABLE_STATES = ["started", "finished", "delivered"]
 
 var createContainerHTML = () => {
     var containerElement = document.createElement("div");
@@ -45,9 +46,9 @@ var createHeaderHTML = (iterations) => {
     var headerElement = document.createElement("div");
     headerElement.setAttribute("class","chart_header");
     if(iterations === 1) {
-        headerElement.innerHTML = `Average Time Spent over 1 iteration`;
+        headerElement.innerHTML = `Average Time Spent Over 1 Iteration (hours)`;
     } else {
-        headerElement.innerHTML = `Average Time Spent over ${iterations} iterations`;
+        headerElement.innerHTML = `Average Time Spent Over ${iterations} Iterations (hours)`;
     }
     headerElement.appendChild(createSubHeaderHTML());
     return headerElement;
@@ -77,8 +78,8 @@ var createHeaderRow = () => {
     var tableRowElement = createRowHTML();
     tableRowElement.appendChild(createColumnHeaderHTML(`Estimate <div class="chart_subhead">(# of stories)</div>`));
     tableRowElement.appendChild(createColumnHeaderHTML(`Total Time`));
-    for(state in TRACKABLE_STATES) {
-        tableRowElement.appendChild(createColumnHeaderHTML(`${capitalizeFirstLetter(TRACKABLE_STATES[state])}`));
+    for(state in DISPLAYABLE_STATES) {
+        tableRowElement.appendChild(createColumnHeaderHTML(`${capitalizeFirstLetter(DISPLAYABLE_STATES[state])}`));
     }
     return tableRowElement;
 }
@@ -87,8 +88,8 @@ var createEstimateRowHTML = (averageTimes, estimate) => {
     var tableRowElement = createRowHTML();
     tableRowElement.appendChild(createCellHTML(createPointColorBox(estimate) + `${estimate} (${averageTimes[estimate].count})`));
     tableRowElement.appendChild(createCellHTML(`${averageTimes[estimate].total}`));
-    for(state in TRACKABLE_STATES) {
-        tableRowElement.appendChild(createCellHTML(`${averageTimes[estimate][TRACKABLE_STATES[state]]}`));
+    for(state in DISPLAYABLE_STATES) {
+        tableRowElement.appendChild(createCellHTML(`${averageTimes[estimate][DISPLAYABLE_STATES[state]]}`));
     }
     return tableRowElement;
 }
@@ -185,27 +186,36 @@ var determineTimeSpentInEachState = (history) => {
     return timeSpent;
 }
 
-var processStoryStateData = async (iterations) => {
+var bulkCacheStories = async (iterations, forceRefresh) => {
+    var storiesToCache = [];
+    for(let i = 0; i < iterations.length; i++) {
+        for(let s = 0; s < iterations[i].stories.length; s++) {
+            storiesToCache.push(iterations[i].stories[s].id);
+        }
+    }
+    await fetchStoryHistories(storiesToCache, forceRefresh);
+}
+
+var assembleStoryStateData = async (iterations, forceRefresh) => {
+    await bulkCacheStories(iterations, forceRefresh);
     var storyStateData = {};
     for(let i = 0; i < iterations.length; i++) {
-        console.log(`Processing iteration ${iterations[i].number}`);
         for(let s = 0; s < iterations[i].stories.length; s++) {
             let story = iterations[i].stories[s];
             if(story.story_type === "feature") {
-                let history = await fetchStoryHistory(story.id, false);
+                let history = await fetchStoryHistory(story.id, forceRefresh);
 
                 var timeSpent = determineTimeSpentInEachState(history);
                 
                 if(storyStateData[story.estimate] === undefined) {
                     storyStateData[story.estimate] = { count : 0, timeSpent : {}}
-                    for(state in TRACKABLE_STATES) {
-                        storyStateData[story.estimate].timeSpent[TRACKABLE_STATES[state]] = 0;
+                    for(state in DISPLAYABLE_STATES) {
+                        storyStateData[story.estimate].timeSpent[DISPLAYABLE_STATES[state]] = 0;
                     }
-                } else {
-                    storyStateData[story.estimate].count++;
-                    for(state in TRACKABLE_STATES) {
-                        storyStateData[story.estimate].timeSpent[TRACKABLE_STATES[state]] += timeSpent[TRACKABLE_STATES[state]];
-                    }
+                } 
+                storyStateData[story.estimate].count++;
+                for(state in DISPLAYABLE_STATES) {
+                    storyStateData[story.estimate].timeSpent[DISPLAYABLE_STATES[state]] += timeSpent[DISPLAYABLE_STATES[state]];
                 }
             }   
         }
@@ -220,16 +230,15 @@ var calculateAverageTimeData = (storyStateData) => {
             count : storyStateData[estimate].count,
             total : 0
         };
-        for(state in TRACKABLE_STATES) {
-            averageTimes[estimate][TRACKABLE_STATES[state]] = Math.round(storyStateData[estimate].timeSpent[TRACKABLE_STATES[state]] / storyStateData[estimate].count);
-            averageTimes[estimate].total += averageTimes[estimate][TRACKABLE_STATES[state]];
+        for(state in DISPLAYABLE_STATES) {
+            averageTimes[estimate][DISPLAYABLE_STATES[state]] = Math.round(storyStateData[estimate].timeSpent[DISPLAYABLE_STATES[state]] / storyStateData[estimate].count);
+            averageTimes[estimate].total += averageTimes[estimate][DISPLAYABLE_STATES[state]];
         }
     }
     return averageTimes;
 }
 
-var addCycleTimeChart = async (iterationsToAverage) => {
-
+var addCycleTimeChart = async (iterationsToAverage, forceRefresh) => {
     removeChart();
     var chartElement = document.querySelector(`.cycle-time-chart`);
     var containerElement = createContainerHTML();
@@ -237,10 +246,9 @@ var addCycleTimeChart = async (iterationsToAverage) => {
     containerElement.appendChild(createLoadingGifHTML());
     chartElement.parentNode.parentNode.parentNode.appendChild(containerElement);
 
-    var iterations = await fetchPrecedingIterations(iterationsToAverage);
-    var storyStateData = await processStoryStateData(iterations);
+    var iterations = await fetchPrecedingIterations(iterationsToAverage, forceRefresh);
+    var storyStateData = await assembleStoryStateData(iterations, forceRefresh);
     var averageTimes = calculateAverageTimeData(storyStateData);
-    
     removeLoadingGif();
     
     containerElement.appendChild(createTableHTML(averageTimes, iterationsToAverage));

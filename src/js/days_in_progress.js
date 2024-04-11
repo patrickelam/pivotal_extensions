@@ -77,7 +77,7 @@ var fetchStoryHistoriesAndUpdateHTML = async (started_stories, forceRefresh) => 
 }
 
 var addDaysInProgress = async (forceRefresh) => {
-    if(headersAreSet()) {
+    if(cookieIsSet()) {
         var started_stories = await fetchStartedStories(forceRefresh);
         await fetchStoryHistoriesAndUpdateHTML(started_stories, forceRefresh);
     }

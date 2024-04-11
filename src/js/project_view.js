@@ -8,15 +8,15 @@ const ITERATION_PROGRESS = "iteration_progress"
 
 var readPrefsFromStorageAndUpdate = (forceRefresh) => {
     chrome.storage.local.get([ADD_DAYS_IN_PROGRESS,ITERATION_PROGRESS]).then((result) => {
-        var add_days_in_progress = result.ADD_DAYS_IN_PROGRESS;
+        var add_days_in_progress = result[ADD_DAYS_IN_PROGRESS];
         if(!add_days_in_progress) add_days_in_progress = "true";
 
-        var iteration_progress = result.ITERATION_PROGRESS;
+        var iteration_progress = result[ITERATION_PROGRESS];
         if(!iteration_progress) iteration_progress = "true";
 
         var preferences = {
-            [ITERATION_PROGRESS] : add_days_in_progress, 
-            [ADD_DAYS_IN_PROGRESS] : iteration_progress
+            [ITERATION_PROGRESS] : iteration_progress, 
+            [ADD_DAYS_IN_PROGRESS] : add_days_in_progress
         };
         updatePage(preferences, forceRefresh);
       });
@@ -45,7 +45,7 @@ var handleForceRefreshEvent = () => {
 }
 
 var handleSetTokenEvent = (data) => {
-    setHeaders(data.token);
+    setCookie(data.token);
 }
 
 var handleMessage = (request, sender, sendResponse) => {
@@ -73,6 +73,6 @@ document.addEventListener("click", (e) => {
     }
 });
 
-waitForElement(`#panel_backlog_${extractProjectId()}`).then((elm) => {
+waitForElement(`#panel_backlog_${extractProjectIdFromURL()}`).then((elm) => {
     readPrefsFromStorageAndUpdate(false);
 });
