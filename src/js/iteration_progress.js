@@ -51,7 +51,8 @@ var insertHTML = (
     pointsDeliveredPercent,
     pointsInProgressPercent,
     pointsPlannedPercent,
-    iterationCompletePercent) => 
+    iterationCompletePercent,
+    timeRemainingString) => 
     {
     var containerElement = document.querySelector(`#panel_backlog_${extractProjectIdFromURL()}`);
 
@@ -61,23 +62,23 @@ var insertHTML = (
         var newElement = createContainerHTML();
         newElement.appendChild(createHeaderHTML("Time"));
         newElement.appendChild(createProgressBarHTML([
-            {label: "Time:", color: "green", width: `${iterationCompletePercent}%`}
+            {label: `${timeRemainingString}`, color: "#629200", width: `${iterationCompletePercent}%`}
         ]));
 
         newElement.appendChild(createHeaderHTML("Points"));
         newElement.appendChild(createProgressBarHTML([
-            {label: "Accepted", color: "green", width: `${pointsAcceptedPercent}%`},
-            {label: "Delivered", color: "blue", width: `${pointsDeliveredPercent}%`},
-            {label: "In Progress", color: "yellow", width: `${pointsInProgressPercent}%`},
-            {label: "Unstarted", color: "orange", width: `${pointsPlannedPercent}%`}
+            {label: "Accepted", color: "#629200", width: `${pointsAcceptedPercent}%`},
+            {label: "Delivered", color: "#F39300", width: `${pointsDeliveredPercent}%`},
+            {label: "In Progress", color: "#203E64", width: `${pointsInProgressPercent}%`},
+            {label: "Unstarted", color: "#E0E2E5", width: `${pointsPlannedPercent}%`}
         ]));
 
         newElement.appendChild(createHeaderHTML("Stories"));
         newElement.appendChild(createProgressBarHTML([
-            {label: "Accepted", color: "green", width: `${storiesAcceptedPercent}%`},
-            {label: "Delivered", color: "blue", width: `${storiesDeliveredPercent}%`},
-            {label: "In Progress", color: "yellow", width: `${storiesInProgressPercent}%`},
-            {label: "Unstarted", color: "orange", width: `${storiesPlannedPercent}%`}
+            {label: "Accepted", color: "#629200", width: `${storiesAcceptedPercent}%`},
+            {label: "Delivered", color: "#F39300", width: `${storiesDeliveredPercent}%`},
+            {label: "In Progress", color: "#203E64", width: `${storiesInProgressPercent}%`},
+            {label: "Unstarted", color: "#E0E2E5", width: `${storiesPlannedPercent}%`}
         ]));
 
         wrapperElement.insertBefore(newElement, wrapperElement.firstChild);
@@ -129,6 +130,11 @@ var addIterationProgress = async (forceRefresh) => {
         var endDT = Date.parse(iterationList[0]["finish"]);
         var iterationLength = endDT - startDT;
         var iterationCompletePercent = ((new Date() - startDT) / iterationLength) * 100;
+        var timeRemaining = endDT - new Date();
+        var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        var timeRemainingString = `${days}d ${hours}h remaining`;
 
         insertHTML(
             (storiesAccepted / totalStories) * 100,
@@ -139,7 +145,8 @@ var addIterationProgress = async (forceRefresh) => {
             (pointsDelivered / totalPoints) * 100,
             (pointsInProgress / totalPoints) * 100,
             (pointsPlanned / totalPoints) * 100,
-            iterationCompletePercent
+            iterationCompletePercent,
+            timeRemainingString
         );
     }
 }
