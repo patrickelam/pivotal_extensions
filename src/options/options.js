@@ -2,6 +2,8 @@ const ADD_DAYS_IN_PROGRESS = "add_days_in_progress"
 const ITERATION_PROGRESS = "iteration_progress"
 const CYCLE_TIME_CHART = "cycle_time_chart"
 const CYCLE_TIME_ITERATIONS = "cycle_time_iterations"
+const SHOW_LABEL_CHART = "show_label_chart"
+const LABEL_LIST = "label_list"
 
 var handleSendEventResponse = (response) => {
     //console.log("handleMessageSendResponse:");
@@ -48,12 +50,18 @@ var updateNumberInput = (id, newValue) => {
     document.getElementById(`${id}`).value = newValue
 }
 
+var updateTextBox = (id, newValue) => {
+    document.getElementById(`${id}`).value = newValue
+}
+
 var readPrefsFromStorage = () => {
     chrome.storage.local.get([
             ADD_DAYS_IN_PROGRESS,
             ITERATION_PROGRESS,
             CYCLE_TIME_CHART,
-            CYCLE_TIME_ITERATIONS
+            CYCLE_TIME_ITERATIONS,
+            SHOW_LABEL_CHART,
+            LABEL_LIST
         ]).then((result) => 
     {
         var add_days_in_progress = result[ADD_DAYS_IN_PROGRESS];
@@ -68,10 +76,18 @@ var readPrefsFromStorage = () => {
         var cycle_time_iterations = parseInt(result[CYCLE_TIME_ITERATIONS]);
         if(!cycle_time_iterations) cycle_time_iterations = 2;
 
+        var show_label_chart = result[SHOW_LABEL_CHART];
+        if(!show_label_chart) show_label_chart = "true";
+
+        var label_list = result[LABEL_LIST];
+        if(!label_list) label_list = "";
+
         updateCheckbox("days_in_progress", add_days_in_progress);
         updateCheckbox("iteration_progress", iteration_progress);
         updateCheckbox("cycle_time_chart", cycle_time_count);
         updateNumberInput("cycle_time_iterations", cycle_time_iterations);
+        updateCheckbox("show_label_chart", show_label_chart);
+        updateTextBox("label_list", label_list);
       });
 }
 
@@ -80,7 +96,9 @@ var writePrefsToStorage = (prefs) => {
         [ADD_DAYS_IN_PROGRESS]: prefs[ADD_DAYS_IN_PROGRESS].toString(),
         [ITERATION_PROGRESS]: prefs[ITERATION_PROGRESS].toString(),
         [CYCLE_TIME_CHART]: prefs[CYCLE_TIME_CHART].toString(),
-        [CYCLE_TIME_ITERATIONS]: prefs[CYCLE_TIME_ITERATIONS].toString()
+        [CYCLE_TIME_ITERATIONS]: prefs[CYCLE_TIME_ITERATIONS].toString(),
+        [SHOW_LABEL_CHART]: prefs[SHOW_LABEL_CHART].toString(),
+        [LABEL_LIST]: prefs[LABEL_LIST].toString()
     }).then(() => {
         sendRefreshEvent();
     });
@@ -92,12 +110,17 @@ var collectPreferences = () => {
     var cycle_time_chart_cb = document.getElementById("cycle_time_chart").checked.toString();
     var cycle_time_iterations_input = parseInt(document.getElementById("cycle_time_iterations").value);
     if(!cycle_time_iterations_input) cycle_time_iterations_input = 2;
-    return { 
+    var show_label_chart_cb = document.getElementById("show_label_chart").checked.toString();
+    var label_list_input = document.getElementById("label_list").value;
+    var prefs = { 
         [ADD_DAYS_IN_PROGRESS] : add_days_in_progress_cb, 
         [ITERATION_PROGRESS] : add_iteration_progress_cb,
         [CYCLE_TIME_CHART] : cycle_time_chart_cb,
-        [CYCLE_TIME_ITERATIONS] : cycle_time_iterations_input.toString()
+        [CYCLE_TIME_ITERATIONS] : cycle_time_iterations_input.toString(),
+        [SHOW_LABEL_CHART] : show_label_chart_cb,
+        [LABEL_LIST] : label_list_input.toString()
     };
+    return prefs;
 }
 
 var handlePreferencesChanged = () => {
@@ -115,12 +138,14 @@ document.addEventListener("click", (e) => {
         e.target.id === "days_in_progress" ||
         e.target.id === "iteration_progress" ||
         e.target.id === "cycle_time_chart" ||
-        e.target.id === "cycle_time_iterations" ) {
+        e.target.id === "cycle_time_iterations" ||
+        e.target.id === "show_label_chart" ||
+        e.target.id === "label_list" ) {
         handlePreferencesChanged();
     }
 });
 document.addEventListener('keydown', function onEvent(e) {
-    if (e.target.id === "cycle_time_iterations" && e.key === "Enter") {
+    if ((e.target.id === "cycle_time_iterations" || e.target.id === "label_list") && e.key === "Enter") {
         handlePreferencesChanged();
     }
 });

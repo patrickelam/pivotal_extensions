@@ -2,16 +2,20 @@
     width: 35px;
 }
 
-.chart_container {
-    border: 1px solid rgb(174, 192, 203);
+.label_loading_gif {
+    width: 35px;
 }
 
-.cycle_time_average {
+.chart_container {
     width: 400px;
     background-color: rgb(248, 249, 250);
     margin-left: 760px;
     margin-top: -322px;
     position: absolute;
+}
+
+.chart {
+    border: 1px solid rgb(174, 192, 203);
 }
 
 .chart_header {
@@ -52,4 +56,20 @@
 .chart_row {
     display: flex;
     max-width: fit-content;
+}
+
+.label_chart {
+    border: 1px solid rgb(174, 192, 203);
+}
+
+.label_chart_container {
+    width: 400px;
+    background-color: rgb(248, 249, 250);
+    margin-left: 760px;
+    margin-top: 15px;
+    position: absolute;
+}
+
+.label_name {
+    width: 150px;
 }

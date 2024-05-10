@@ -5,6 +5,7 @@ Inspired by [Story Time](https://github.com/bertrandmoulard/story_time/tree/mast
 - Days in Progress
 - Iteration Progress
 - Cycle Time By Point Detail Chart
+- Label Statistics Chart
 
 # Usage
 
@@ -22,9 +23,15 @@ Features can be toggled on / off in the options menu.
 
 ![iteration progress](./screenshots/iteration_progress.png)
 
-**Cycle Time By Point Detail Chart** Adds a chart on the Analytics -> Cycle Time that gives adds more details to the Cycle Time by Point chart. Specifically, it gives the average time a story with a given estimate spends in total, and in several key states over the given number of iterations. 
+**Cycle Time By Point Detail Chart** Adds a chart on the Analytics -> Cycle Time page that gives adds more details to the Cycle Time by Point chart. Specifically, it gives the average time a story with a given estimate spends in total, and in several key states over the given number of iterations. 
+
+*Disclaimer:* Points don't equal time, and it's important that the whole team understands why. However, retrospectively it can be advantagous to look for patterns in a team's estimation. It takes a high degree of trust within the team to do this effectively, but the goal of surfacing these metrics is to drive conversations around potential behavior changes that lead to more effective development. The intent is not to pursue any metric for the sake of itself.
 
 ![cycle time chart](./screenshots/cycle_time_chart.png)
+
+**Label Statistics Chart** Adds a chart on the Analytics -> Cycle Time page that gives some basic statistics on the labels a user specifies. Specifically, it shows the total hours worked on cards with that label, the number of points associated with those cards (if applicable), and the total number of Feature, Chore, and Bug cards with that label.
+
+![label statistics chart](./screenshots/label_statistics_chart.png)
 
 ### Authentication
 

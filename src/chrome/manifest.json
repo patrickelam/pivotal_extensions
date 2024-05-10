@@ -1,6 +1,6 @@
 {
     "name": "Pivotal Extensions",
-    "version": "0.3.3",
+    "version": "0.4.0",
     "description": "Make tweaks to Pivotal Tracker's UI to enhance usability.",
     "content_scripts": [
       {
@@ -19,8 +19,10 @@
         "matches": ["https://www.pivotaltracker.com/reports/v2/projects/*"],
         "js": [
           "pivotal.js",
+          "chart_helper.js",
           "page_helpers.js",
           "cycle_time_by_point.js",
+          "label_chart.js",
           "reports_view.js"
         ],
         "css": ["reports_view.css"],

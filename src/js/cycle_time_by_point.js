@@ -1,7 +1,7 @@
 const TRACKABLE_STATES = ["unstarted", "started", "finished", "delivered", "accepted"];
 const DISPLAYABLE_STATES = ["started", "finished", "delivered"]
 
-var createContainerHTML = () => {
+var createCycleTimeContainerHTML = () => {
     var containerElement = document.createElement("div");
     containerElement.setAttribute("class", "cycle_time_by_point_container");
     containerElement.setAttribute("type", "pivotal_extensions_cycle_time_by_point");
@@ -31,55 +31,12 @@ var createPointColorBox = (estimate) => {
     return(`<span style="border-top: 10px solid ${color};display:inline-block;width:10px;margin-right:5px"></span>`)
 }
 
-var capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-var createSubHeaderHTML = () => {
-    var headerElement = document.createElement("div");
-    headerElement.setAttribute("class","chart_subhead");
-    headerElement.innerHTML = `Not Including Current Iteration`;
-    return headerElement;
-}
-
-var createHeaderHTML = (iterations) => {
-    var headerElement = document.createElement("div");
-    headerElement.setAttribute("class","chart_header");
-    if(iterations === 1) {
-        headerElement.innerText = `Average Time Spent Over 1 Iteration (hours)`;
-    } else {
-        headerElement.innerText = `Average Time Spent Over ${iterations} Iterations (hours)`;
-    }
-    headerElement.appendChild(createSubHeaderHTML());
-    return headerElement;
-}
-
-var createCellHTML = (content) => {
-    var cellElement = document.createElement("div");
-    cellElement.innerHTML = `${content}`;
-    cellElement.setAttribute("class","chart_cell");
-    return cellElement;
-}
-
-var createColumnHeaderHTML = (content) => {
-    var cellElement = document.createElement("div");
-    cellElement.innerHTML = `${content}`;
-    cellElement.setAttribute("class","chart_column_header");
-    return cellElement;
-}
-
-var createRowHTML = () => {
-    var tableRowElement = document.createElement("div");
-    tableRowElement.setAttribute("class","chart_row");
-    return tableRowElement;
-}
-
-var createHeaderRow = () => {
+var createCycleTimeHeaderRow = () => {
     var tableRowElement = createRowHTML();
     tableRowElement.appendChild(createColumnHeaderHTML(`Estimate <div class="chart_subhead">(# of stories)</div>`));
-    tableRowElement.appendChild(createColumnHeaderHTML(`Total Time`));
+    tableRowElement.appendChild(createColumnHeaderHTML(`Total Time <div class="chart_subhead">(Hours)</div>`));
     for(state in DISPLAYABLE_STATES) {
-        tableRowElement.appendChild(createColumnHeaderHTML(`${capitalizeFirstLetter(DISPLAYABLE_STATES[state])}`));
+        tableRowElement.appendChild(createColumnHeaderHTML(`${capitalizeFirstLetter(DISPLAYABLE_STATES[state])} <div class="chart_subhead">(Hours)</div>`));
     }
     return tableRowElement;
 }
@@ -94,16 +51,18 @@ var createEstimateRowHTML = (averageTimes, estimate) => {
     return tableRowElement;
 }
 
-var createTableHTML = (averageTimes, iterationsToAverage) => {
+var createCycleTimeChartHTML = (averageTimes, iterationsToAverage) => {
     var containerElement = document.createElement("div");
-    containerElement.setAttribute("class", "chart_container");
+    containerElement.setAttribute("class", "chart");
     
-    containerElement.appendChild(createHeaderHTML(iterationsToAverage));
+    var title = `Average Time Spent Over ${iterationsToAverage} Iteration`;
+    if(iterationsToAverage > 1) title += "s";
+    containerElement.appendChild(createHeaderHTML(title));
 
     var tableElement = document.createElement("div");
     tableElement.setAttribute("class","chart_table");
 
-    tableElement.appendChild(createHeaderRow());
+    tableElement.appendChild(createCycleTimeHeaderRow());
 
     for(let estimate in averageTimes) {
         tableElement.appendChild(createEstimateRowHTML(averageTimes, estimate));
@@ -113,14 +72,14 @@ var createTableHTML = (averageTimes, iterationsToAverage) => {
     return containerElement;
 }
 
-var removeChart = () => {
+var removeCycleTimeChart = () => {
     var old_element = document.querySelector('[type="pivotal_extensions_cycle_time_by_point"]');
     if(old_element != undefined) {
         old_element.remove();
     };
 }
 
-var chartExists = () => {
+var cycleTimeChartExists = () => {
     var chart = document.querySelector('[type="pivotal_extensions_cycle_time_by_point"]');
     if(chart != undefined) {
         return true;
@@ -128,20 +87,17 @@ var chartExists = () => {
     return false;
 }
 
-var removeLoadingGif = () => {
-    var old_element = document.querySelector('[type="pivotal_extensions_loading_gif"]');
+var removeCycleTimeLoadingGif = () => {
+    var old_element = document.querySelector('[class="cycle_time_by_point_loading_gif"]');
     if(old_element != undefined) {
         old_element.remove();
     };
 }
 
-var createLoadingGifHTML = () => {
-    var containerElement = document.createElement("img");
-    containerElement.setAttribute("type", "pivotal_extensions_loading_gif");
-    containerElement.setAttribute("class", "cycle_time_by_point_loading_gif");
-    var gifURL = chrome.runtime.getURL("assets/loading.gif");
-    containerElement.src = gifURL;
-    return containerElement;
+var createCycleTimeLoadingGifHTML = () => {
+    var gifElement = createLoadingGifHTML();
+    gifElement.setAttribute("class", "cycle_time_by_point_loading_gif");
+    return gifElement;
 }
 
 // Counts 24 hours a day, minus weekends
@@ -164,13 +120,13 @@ var hoursBetweenDates = (earlier, later) => {
     return Math.ceil((diff - (weekendDayCount*24*MS_IN_HR))/MS_IN_HR);
 }
 
-var determineTimeSpentInEachState = (history) => {
+var determineTimeSpentInTrackableStates = (history) => {
     var timeSpent = {};
     var trackedState = {};
     for(state in TRACKABLE_STATES) {
         timeSpent[TRACKABLE_STATES[state]] = 0;
     }
-    for(let i = history.length - 1; i >= 0; i--) {        
+    for(let i = history.length - 1; i >= 0; i--) {
         if(TRACKABLE_STATES.includes(history[i].highlight)) {
             if(trackedState.highlight === undefined) {
                 trackedState.highlight = history[i].highlight;
@@ -205,7 +161,7 @@ var assembleStoryStateData = async (iterations, forceRefresh) => {
             if(story.story_type === "feature") {
                 let history = await fetchStoryHistory(story.id, forceRefresh);
 
-                var timeSpent = determineTimeSpentInEachState(history);
+                var timeSpent = determineTimeSpentInTrackableStates(history);
                 
                 if(storyStateData[story.estimate] === undefined) {
                     storyStateData[story.estimate] = { count : 0, timeSpent : {}}
@@ -239,17 +195,17 @@ var calculateAverageTimeData = (storyStateData) => {
 }
 
 var addCycleTimeChart = async (iterationsToAverage, forceRefresh) => {
-    removeChart();
+    removeCycleTimeChart();
     var chartElement = document.querySelector(`.cycle-time-chart`);
-    var containerElement = createContainerHTML();
-    containerElement.setAttribute("class", "cycle_time_average");
-    containerElement.appendChild(createLoadingGifHTML());
+    var containerElement = createCycleTimeContainerHTML();
+    containerElement.setAttribute("class", "chart_container");
+    containerElement.appendChild(createCycleTimeLoadingGifHTML());
     chartElement.parentNode.parentNode.parentNode.appendChild(containerElement);
 
     var iterations = await fetchPrecedingIterations(iterationsToAverage, forceRefresh);
     var storyStateData = await assembleStoryStateData(iterations, forceRefresh);
     var averageTimes = calculateAverageTimeData(storyStateData);
-    removeLoadingGif();
+    removeCycleTimeLoadingGif();
     
-    containerElement.appendChild(createTableHTML(averageTimes, iterationsToAverage));
+    containerElement.appendChild(createCycleTimeChartHTML(averageTimes, iterationsToAverage));
 }

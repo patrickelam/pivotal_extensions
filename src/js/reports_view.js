@@ -1,17 +1,27 @@
 const CYCLE_TIME_CHART = "cycle_time_chart"
 const CYCLE_TIME_ITERATIONS = "cycle_time_iterations"
+const SHOW_LABEL_CHART = "show_label_chart"
+const LABEL_LIST = "label_list"
 
 var readPrefsFromStorageAndUpdate = (forceRefresh) => {    
-    chrome.storage.local.get([CYCLE_TIME_CHART,CYCLE_TIME_ITERATIONS]).then((result) => {
+    chrome.storage.local.get([CYCLE_TIME_CHART,CYCLE_TIME_ITERATIONS,SHOW_LABEL_CHART,LABEL_LIST]).then((result) => {
         var cycle_time_chart = result[CYCLE_TIME_CHART];
         if(!cycle_time_chart) cycle_time_chart = "true";
 
         var cycle_time_iterations = parseInt(result[CYCLE_TIME_ITERATIONS]);
         if(!cycle_time_iterations) cycle_time_iterations = 2;
 
+        var show_label_chart = result[SHOW_LABEL_CHART];
+        if(!show_label_chart) show_label_chart = "true";
+
+        var label_list = result[LABEL_LIST];
+        if(!label_list) label_list = "";
+
         var preferences = {
             [CYCLE_TIME_CHART] : cycle_time_chart, 
-            [CYCLE_TIME_ITERATIONS] : cycle_time_iterations
+            [CYCLE_TIME_ITERATIONS] : cycle_time_iterations,
+            [SHOW_LABEL_CHART] : show_label_chart,
+            [LABEL_LIST] : label_list
         };
         updatePage(preferences, forceRefresh);
       });
@@ -19,13 +29,23 @@ var readPrefsFromStorageAndUpdate = (forceRefresh) => {
 }
 
 var updatePage = (preferences, forceRefresh) => {
+    
+    if(preferences[SHOW_LABEL_CHART] === "true" && isOnCycleTimeByPoint()) {
+        if(labelChartExists()) {
+            removeLabelChart();
+        }
+        add_label_chart(preferences[LABEL_LIST].split(","), preferences[CYCLE_TIME_ITERATIONS], forceRefresh);
+    } else {
+        removeLabelChart();
+    }
+
     if(preferences[CYCLE_TIME_CHART] === "true" && isOnCycleTimeByPoint()) {
-        if(chartExists()) {
-            removeChart();
+        if(cycleTimeChartExists()) {
+            removeCycleTimeChart();
         }
         addCycleTimeChart(preferences[CYCLE_TIME_ITERATIONS], forceRefresh);
     } else {
-        removeChart();
+        removeCycleTimeChart();
     }
 }
 
@@ -66,13 +86,13 @@ var isOnCycleTimeByPoint = () => {
 chrome.runtime.onMessage.addListener(handleMessage);
 
 waitForElement(`.cycle-time-chart`).then((elm) => {
-    if(isOnCycleTimeByPoint() && !chartExists()) {
+    if(isOnCycleTimeByPoint() && !cycleTimeChartExists() && !labelChartExists()) {
         readPrefsFromStorageAndUpdate(false);
     }
 });
   
 observeUrlChange(() => {
-    if(isOnCycleTimeByPoint() && !chartExists()) {
+    if(isOnCycleTimeByPoint() && !cycleTimeChartExists() && !labelChartExists()) {
         readPrefsFromStorageAndUpdate(false);
     }
 });
